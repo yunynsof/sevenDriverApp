@@ -1,0 +1,41 @@
+<ion-content padding class="transparent-header" [ngStyle]="{'background-image': 'url(' + backgroundImage +')'}">
+  <div padding>
+    <ion-row>
+      <ion-col>
+        <img class="logo" src="assets/img/logo/logo-mailchimp.png" />
+      </ion-col>
+    </ion-row>
+
+    <form [formGroup]="loginData" (ngSubmit)="login()"  *ngIf="!showRoleSelection">
+      <ion-row>
+        <ion-col>
+          <ion-list inset class="no-border">
+            <ion-item>
+              <ion-label>Username</ion-label>
+              <ion-input type="email" formControlName="username" value="admin"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>Password</ion-label>
+              <ion-input type="password" formControlName="password" value="Q1w2e3r4t5@"></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <button class="login-button" margin-top ion-button type="submit" [disabled]="!loginData.valid">Iniciar Sesión</button>
+        </ion-col>
+      </ion-row>
+    </form>
+
+    <ion-row>
+      <ion-col>
+        <div (click)="goToSignup()">
+          <span>Inicie Sesión con su Usuario de Conductor de Seven</span>
+        </div>
+      </ion-col>
+    </ion-row>
+
+
+  </div>
+</ion-content>

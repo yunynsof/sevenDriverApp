@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "583631002658",
+    "firebase_url": "https://taxiexpress-ceb3f.firebaseio.com",
+    "project_id": "taxiexpress-ceb3f",
+    "storage_bucket": "taxiexpress-ceb3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583631002658:android:2c9d837008cba0d6",
+        "android_client_info": {
+          "package_name": "com.seven.driverapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583631002658-6qbes7j5jnh2n0akc6qklmk77sigt91c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seven.driverapp",
+            "certificate_hash": "2f9da0648a60b17dfa5ad4941e035361e3dcd7a9"
+          }
+        },
+        {
+          "client_id": "583631002658-qv5v90r8qv005muq0gq0f6t84g9kme4f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5XEoCBDz5LMT1XsKqYuFJOuUsuROvJpw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583631002658-qv5v90r8qv005muq0gq0f6t84g9kme4f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

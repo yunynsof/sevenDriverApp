@@ -1,0 +1,63 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Perfil</ion-title>
+    </ion-toolbar>
+  </ion-header>
+<ion-content>
+  <ion-list>
+    <ion-list-header text-wrap>
+      <ion-avatar item-start (click)="updateProfileImage()">
+        <img [src]="user.imageUrl ? user.imageUrl : placeholderPicture" >
+      </ion-avatar>
+      <h2>{{user.name}}</h2>
+      <p>{{user.email}}</p>
+    </ion-list-header>
+    <ion-item>
+        <h2>Calificación</h2>
+        <ionic3-star-rating 
+            activeIcon = "star"
+            defaultIcon = "star-outline"
+            activeColor = "#FFE819" 
+            defaultColor = "#f4f4f4"
+            readonly="true"
+            [rating]="3"
+            item-end>
+        </ionic3-star-rating>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      Vehículo
+    </ion-list-header>
+    <ion-item>
+      <ion-icon name='car' item-start></ion-icon>
+      <h2>Placa: {{vehicle.register}}</h2>
+      <p>Número: {{vehicle.number}}</p>
+      <button ion-button (click)="locate()" item-end>
+        {{LocateButtonText}}
+        </button>
+    </ion-item>
+    <ion-item *ngIf="locating == true">
+      <ion-label><b>Latitud:</b> {{ fbLatitude }}</ion-label>   
+      <ion-label><b>Latitud:</b> {{ fbLongitude }}</ion-label>      
+    </ion-item>
+  </ion-list>
+
+  
+  
+  <ion-list>
+    <ion-list-header>
+      Cuenta
+    </ion-list-header>
+    <ion-item>
+      <ion-icon name='power' item-start></ion-icon>
+      <button ion-button (click)="logOut()" item-end>
+      Cerrar Sesión
+      </button>
+    </ion-item>
+  </ion-list>
+</ion-content>
