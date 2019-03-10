@@ -30,8 +30,8 @@ import { Events } from 'ionic-angular';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  //rootPage: any = 'HomePage';
-  rootPage:any = 'ProfilePage';
+  rootPage: any;
+  //rootPage:any = 'ProfilePage';
   activePage = new Subject();
 
   idToken: string;
@@ -74,10 +74,12 @@ export class MyApp {
       platform.ready().then(() => {
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
+        this.global.set('theme', 'theme-dark');
+        this.rootPage = 'ProfilePage';
         statusBar.styleDefault();
         splashScreen.hide();
         this.menuCtrl.enable(false, 'right');
-        this.global.set('theme', 'theme-dark');
+        
         if(this.storage.get("user_id") != null )
 
         this.storage.get('user_id').then((user_id) => {

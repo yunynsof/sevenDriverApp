@@ -1,6 +1,6 @@
 .theme-dark {
   transition: all 1.1s ease;
-  background-color: #303030;
+  //background-color: #303030;
   // background: #0c1a2c;
   // background: linear-gradient(to bottom,rgba(9,16,25,1) 0,rgba(30,28,58,1) 25%,rgba(30,28,58,1) 75%,rgba(11,12,22,1) 100%);
   h1,
@@ -35,7 +35,7 @@
     //border-width: 1px;
     //border-color: white;
   }
-  ion-content,
+  //ion-content,
   .input-wrapper,
   .item-inner,
   .item,
@@ -70,6 +70,13 @@
   .range-bar-active {
     background-color: white !important;
     color: black !important;
+  }
+
+  //Custom Styles
+  #menu-material{
+    .scroll-content {
+      background-color: #303030 !important;
+    }    
   }
 }
 

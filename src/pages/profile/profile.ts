@@ -30,6 +30,8 @@ import { tap } from 'rxjs-compat/operators/tap';
 
 import { Platform } from 'ionic-angular';
 
+import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapsAnimation, MyLocation, Environment } from '@ionic-native/google-maps';
+
 /**
  * Generated class for the ProfilePage page.
  *
@@ -42,8 +44,10 @@ import { Platform } from 'ionic-angular';
   selector: 'page-profile',
   templateUrl: 'profile.html',
 })
-export class ProfilePage extends ProtectedPage{
-  
+export class ProfilePage extends ProtectedPage {
+
+  environment: Environment = null;
+
   profilePicture: string;
   profileRef: any;
   errorMessage: any;
@@ -63,7 +67,7 @@ export class ProfilePage extends ProtectedPage{
     user_id: '',
     name: '',
     email: '',
-    imageUrl: '../assets/img/avatar/user.png'    
+    imageUrl: '../assets/img/avatar/user.png'
   };
 
   vehicle = {
@@ -74,27 +78,28 @@ export class ProfilePage extends ProtectedPage{
 
   driver: Observable<any>;
 
-  LocateButtonText:string = "Ubicar";
-  locating:boolean = false;
+  LocateButtonText: string = "Ubicar";
+  locating: boolean = false;
 
-  latitude:any = "";
-  longitude:any = ""; 
-  fbLatitude:any = "";
-  fbLongitude:any = ""; 
+  latitude: any = "";
+  longitude: any = "";
+  fbLatitude: any = "";
+  fbLongitude: any = "";
 
-  watch:any;
+  watch: any;
   subscription: any;
-  
+
+  map: GoogleMap;
 
   constructor(
     public storage: Storage,
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     public alertService: AlertService,
     //public toastCtrl: ToastService,
-    public authService: AuthService, 
+    public authService: AuthService,
     private geolocation: Geolocation,
-    public httpClient: HttpClient,    
+    public httpClient: HttpClient,
     public fcm: FcmProvider,
     public toastCtrl: ToastController,
     private myFirebase: Firebase,
@@ -104,120 +109,141 @@ export class ProfilePage extends ProtectedPage{
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
+    this.environment = new Environment();
+    this.environment.setBackgroundColor("#303030");
+    this.loadMap();
     this.getUserInfo();
-    this.watch = this.geolocation.watchPosition({enableHighAccuracy: true });  
-    
+    this.watch = this.geolocation.watchPosition({ enableHighAccuracy: true });
+
   }
 
+  loadMap() {
+    // If you want to run your app
+    // on browser, insert this line.
+    /*
+    Environment.setEnv({
+      'API_KEY_FOR_BROWSER_RELEASE': 'AIzaSyCmz7oHEd5LqSGdal0vtfWUOkxn9GSUKt4',
+      'API_KEY_FOR_BROWSER_DEBUG':'AIzaSyCmz7oHEd5LqSGdal0vtfWUOkxn9GSUKt4'
+    });
+    */
+    // Create a map
+    // after the view is ready
+    // and the native platform is ready.
+    this.map = GoogleMaps.create('map_canvas');
+  }
   
+
+ 
+
+
 
   updateImage(value) {
     this.profilePicture = 'data:image/jpeg;base64,' + value.val();
   }
-  
+
   getUserInfo() {
     console.log("Getting User Information");
     Promise.all([this.storage.get("user_id"), this.storage.get("firstName"), this.storage.get("lastName"), this.storage.get("email"), this.storage.get("id_token")]).then(values => {
-          console.log("User ID", values[0]);
-          console.log("First Name", values[1]);
-          this.user.user_id = values[0];
-          this.user.name = values[1] + ' ' + values[2];
-          this.user.email = values[3];
-          this.idToken = values[4];   
-          this.getDriverInfo();       
+      console.log("User ID", values[0]);
+      console.log("First Name", values[1]);
+      this.user.user_id = values[0];
+      this.user.name = values[1] + ' ' + values[2];
+      this.user.email = values[3];
+      this.idToken = values[4];
+      this.getDriverInfo();
     });
   }
 
-  getDriverInfo(){
+  getDriverInfo() {
     console.log("Getting Driver Information");
 
-    this.driver = this.httpClient.get("https://45.56.125.220/api/v1/drivers/" + this.user.user_id + '/' , {
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+ this.idToken}
-   });
+    this.driver = this.httpClient.get("https://45.56.125.220/api/v1/drivers/" + this.user.user_id + '/', {
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.idToken }
+    });
     this.driver
-    .subscribe(data => {
-      console.log('my data: ', data);
-      this.user.imageUrl = "https://45.56.125.220/media/" + data.picture;
-      this.vehicle.id = data.vehicle.id;
-      this.vehicle.register = data.vehicle.register;
-      this.vehicle.number = data.vehicle.number;
-    })
+      .subscribe(data => {
+        console.log('my data: ', data);
+        this.user.imageUrl = "https://45.56.125.220/media/" + data.picture;
+        this.vehicle.id = data.vehicle.id;
+        this.vehicle.register = data.vehicle.register;
+        this.vehicle.number = data.vehicle.number;
+      })
   }
 
   handleError(error) {
-      return Observable.throw(error.json().error || 'Server error');
+    return Observable.throw(error.json().error || 'Server error');
   }
 
-  getCurrentFirebaseLocation(){
+  getCurrentFirebaseLocation() {
     console.log("getCurrentFirebaseLocation");
 
     // Get a reference to the database service
-    var carLocationRef = this.af.database.ref('carsLocations/'+this.vehicle.id);
+    var carLocationRef = this.af.database.ref('carsLocations/' + this.vehicle.id);
     carLocationRef.on('value', (snapshot) => {
       console.log(snapshot.val());
-      if(snapshot.exists()){
-        let l = snapshot.val().l;      
+      if (snapshot.exists()) {
+        let l = snapshot.val().l;
         this.fbLatitude = l[0];
         this.fbLongitude = l[1];
       }
     });
   }
 
-  locate():void{
+  locate(): void {
     this.getCurrentFirebaseLocation();
 
-    if(this.locating == false){
+    if (this.locating == false) {
       console.log("Locating Vehicle with id: " + this.vehicle.id);
       this.LocateButtonText = "Parar";
       this.locating = true;
       // Create a new GeoFire instance at the random Firebase location
       var databaseLocationRef = this.af.database.ref('carsLocations');
       var geoFire = new GeoFire(databaseLocationRef);
-      
-      this.subscription = this.watch.subscribe((data) => {
-      // data can be a set of coordinates, or an error (if an error occurred).
-      // data.coords.latitude
-      // data.coords.longitude
-      console.log("Latitude: " + data.coords.latitude);
-      console.log("Longitude: " + data.coords.longitude);
 
-      this.latitude = data.coords.latitude;
-      this.longitude = data.coords.longitude;
-      
-      geoFire.set(this.vehicle.id.toString(), [ this.latitude , this.longitude]).then(function() {
-            console.log("My location changed to " + [ data.coords.latitude , data.coords.longitude]);
-        });    
+      this.subscription = this.watch.subscribe((data) => {
+        // data can be a set of coordinates, or an error (if an error occurred).
+        // data.coords.latitude
+        // data.coords.longitude
+        console.log("Latitude: " + data.coords.latitude);
+        console.log("Longitude: " + data.coords.longitude);
+
+        this.latitude = data.coords.latitude;
+        this.longitude = data.coords.longitude;
+
+        geoFire.set(this.vehicle.id.toString(), [this.latitude, this.longitude]).then(function () {
+          console.log("My location changed to " + [data.coords.latitude, data.coords.longitude]);
+        });
 
       });
-    }else{
+    } else {
       console.log("Stopped Locating");
       this.LocateButtonText = "Ubicar";
       this.locating = false;
       this.subscription.unsubscribe();
     }
 
-    
+
   }
 
 
   logOut() {
-    
+
     this.alertService.presentAlertWithCallback('Cerrar Sesión',
       'Esta Seguro que desea cerrar su sesión?').then((yes) => {
         if (yes) {
           //this.toastCtrl.create('Logged out of the application');
-          
+
           this.authService.logout();
           this.navCtrl.setRoot(LoginPage);
         }
       });
   }
-  
-  ionViewWillLeave(){
-    if(this.subscription != null){
+
+  ionViewWillLeave() {
+    if (this.subscription != null) {
       this.subscription.unsubscribe();
     }
-    
+
   }
 
 }

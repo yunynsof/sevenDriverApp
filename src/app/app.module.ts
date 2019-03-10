@@ -32,6 +32,9 @@ import { ToastService } from '../providers/util/toast.service';
 import { AlertService } from '../providers/util/alert.service';
 import { FirestoreProvider } from '../providers/firestore/firestore';
 
+import { GoogleMaps } from "@ionic-native/google-maps";
+
+
 let storage = new Storage({});
 
 export function getAuthHttp(http) {
@@ -78,6 +81,7 @@ const firebase = {
     ToastService,    
     AppState,
     SplashScreen,
+    GoogleMaps,
     {
       provide: AuthHttp,
       useFactory: getAuthHttp,
