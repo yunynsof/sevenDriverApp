@@ -30,7 +30,7 @@ import { tap } from 'rxjs-compat/operators/tap';
 
 import { Platform } from 'ionic-angular';
 
-import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapsAnimation, MyLocation, Environment } from '@ionic-native/google-maps';
+import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapsAnimation, MyLocation, Environment, GoogleMapOptions, BaseArrayClass, ILatLng } from '@ionic-native/google-maps';
 
 /**
  * Generated class for the ProfilePage page.
@@ -90,6 +90,7 @@ export class ProfilePage extends ProtectedPage {
   subscription: any;
 
   map: GoogleMap;
+  myLocationMarker: Marker;
 
   constructor(
     public storage: Storage,
@@ -111,7 +112,6 @@ export class ProfilePage extends ProtectedPage {
     console.log('ionViewDidLoad ProfilePage');
     this.environment = new Environment();
     this.environment.setBackgroundColor("#303030");
-    this.loadMap();
     this.getUserInfo();
     this.watch = this.geolocation.watchPosition({ enableHighAccuracy: true });
 
@@ -120,25 +120,77 @@ export class ProfilePage extends ProtectedPage {
   loadMap() {
     // If you want to run your app
     // on browser, insert this line.
-    /*
+
     Environment.setEnv({
       'API_KEY_FOR_BROWSER_RELEASE': 'AIzaSyCmz7oHEd5LqSGdal0vtfWUOkxn9GSUKt4',
-      'API_KEY_FOR_BROWSER_DEBUG':'AIzaSyCmz7oHEd5LqSGdal0vtfWUOkxn9GSUKt4'
+      'API_KEY_FOR_BROWSER_DEBUG': 'AIzaSyCmz7oHEd5LqSGdal0vtfWUOkxn9GSUKt4'
     });
-    */
+
     // Create a map
     // after the view is ready
     // and the native platform is ready.
-    this.map = GoogleMaps.create('map_canvas');
+
+
+
+
+    let POINTS: BaseArrayClass<any> = new BaseArrayClass<any>([
+      {
+        position: { lat: 14.0746752, lng: -87.1923712 },
+        icon: {
+          url: "./assets/icon/person-icon.png",
+          size: {
+            width: 24,
+            height: 24
+          }
+        }
+      },
+      {
+        position: { lat: 14.09304594, lng: -87.22221311 },
+        icon: {
+          url: "./assets/icon/taxi-icon.png",
+          size: {
+            width: 24,
+            height: 24
+          }
+        }
+      }]);
+
+    let bounds: ILatLng[] = POINTS.map((data: any, idx: number) => {
+      console.log(data);
+      return data.position;
+    });
+
+    let mapOptions: GoogleMapOptions = {
+      controls: {
+        zoom: false,
+        myLocation: true,
+        myLocationButton: true,
+        indoorPicker: true,
+        mapToolbar: true,
+        compass: false
+      },
+      camera: {
+        target: bounds,
+        //zoom: 15,
+        //tilt: 30
+      }
+    };
+
+    this.map = GoogleMaps.create('map_canvas', mapOptions);
+
+    POINTS.forEach((data: any) => {
+      data.disableAutoPan = true;
+      let marker: Marker = this.map.addMarkerSync(data);
+      //marker.setIcon(data.iconData);
+      //marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(this.onMarkerClick);
+      //marker.on(GoogleMapsEvent.INFO_CLICK).subscribe(this.onMarkerClick);
+    });
   }
-  
 
- 
-
-
-
-  updateImage(value) {
-    this.profilePicture = 'data:image/jpeg;base64,' + value.val();
+  onMarkerClick(params: any) {
+    let marker: Marker = <Marker>params[1];
+    let iconData: any = marker.get('iconData');
+    marker.setIcon(iconData);
   }
 
   getUserInfo() {
@@ -192,6 +244,19 @@ export class ProfilePage extends ProtectedPage {
   locate(): void {
     this.getCurrentFirebaseLocation();
 
+    this.loadMap();
+
+    this.myLocationMarker = this.map.addMarkerSync({
+      position: { lat: 14.09304594, lng: -87.22221311 },
+      icon: {
+        url: "./assets/icon/taxi-icon.png",
+        size: {
+          width: 24,
+          height: 24
+        }
+      }
+    });
+
     if (this.locating == false) {
       console.log("Locating Vehicle with id: " + this.vehicle.id);
       this.LocateButtonText = "Parar";
@@ -214,7 +279,18 @@ export class ProfilePage extends ProtectedPage {
           console.log("My location changed to " + [data.coords.latitude, data.coords.longitude]);
         });
 
+        this.myLocationMarker.setPosition( { lat: this.latitude, lng: this.longitude });
+
       });
+
+      /*
+      this.map.moveCamera({
+        target: { lat: 14.087963, lng: -87.182993 },
+        zoom: 15
+      }).then(() => {
+        //alert("Camera target has been changed");
+      });
+      */
     } else {
       console.log("Stopped Locating");
       this.LocateButtonText = "Ubicar";
