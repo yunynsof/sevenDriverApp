@@ -1,6 +1,6 @@
 import { AppState } from './app.global';
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, MenuController } from 'ionic-angular';
+import { Nav, Platform, MenuController, NavController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -12,7 +12,8 @@ import { Firebase } from '@ionic-native/firebase';
 
 import { FcmProvider } from '../providers/fcm/fcm';
 
-import { ToastController } from 'ionic-angular';
+import { App, ToastController } from 'ionic-angular';
+import { AlertService } from '../providers/util/alert.service';
 import { Subject } from 'rxjs/Subject';
 import { tap } from 'rxjs/operators';
 
@@ -23,7 +24,7 @@ import 'rxjs/Rx';
 
 import { Events } from 'ionic-angular';
 
-
+import { LoginPage } from '../pages/login/login';
 @Component({
   templateUrl: 'app.html'
 })
@@ -59,11 +60,13 @@ export class MyApp {
 
   constructor(
     platform: Platform, 
-    statusBar: StatusBar, 
+    statusBar: StatusBar,
+    public app: App,
     splashScreen: SplashScreen, 
     firebase: Firebase, 
     fcm: FcmProvider, 
     toastCtrl: ToastController,
+    public alertService: AlertService,
     public global: AppState,
     public menuCtrl: MenuController,
     public authService: AuthService,
@@ -74,7 +77,7 @@ export class MyApp {
       platform.ready().then(() => {
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
-        this.global.set('theme', 'theme-dark');
+        //this.global.set('theme', 'theme-dark');
         this.rootPage = 'ProfilePage';
         statusBar.styleDefault();
         splashScreen.hide();
@@ -135,9 +138,7 @@ export class MyApp {
         { title: 'Carreras Disponibles', component: 'RidesPage', active: false, icon: 'map' },
         { title: 'Perfil', component: 'ProfilePage', active: true, icon: 'contact' },
         { title: 'Historial', component: 'RidesPage', active: false, icon: 'list-box' },
-        { title: 'Ayuda', component: 'RidesPage', active: false, icon: 'help' },
-        { title: 'Cerrar Sesión', component: 'RidesPage', active: false, icon: 'exit' },
-
+        { title: 'Ayuda', component: 'RidesPage', active: false, icon: 'help' }
       ];
 
       this.activePage.subscribe((selectedPage: any) => {
@@ -181,6 +182,19 @@ export class MyApp {
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
     this.activePage.next(page);
+  }
+
+  logOut() {
+
+    this.alertService.presentAlertWithCallback('Cerrar Sesión',
+      'Esta Seguro que desea cerrar su sesión?').then((yes) => {
+        if (yes) {
+          //this.toastCtrl.create('Logged out of the application');
+
+          this.authService.logout();
+          this.app.getActiveNav().setRoot(LoginPage); 
+        }
+      });
   }
 }
 

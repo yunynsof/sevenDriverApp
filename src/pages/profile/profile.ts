@@ -80,6 +80,7 @@ export class ProfilePage extends ProtectedPage {
 
   LocateButtonText: string = "Ubicar";
   locating: boolean = false;
+  movedCamera: boolean = false;
 
   latitude: any = "";
   longitude: any = "";
@@ -110,10 +111,27 @@ export class ProfilePage extends ProtectedPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
-    this.environment = new Environment();
-    this.environment.setBackgroundColor("#303030");
+    //this.environment = new Environment();
+    //this.environment.setBackgroundColor("#303030");
     this.getUserInfo();
     this.watch = this.geolocation.watchPosition({ enableHighAccuracy: true });
+    let mapOptions: GoogleMapOptions = {
+      controls: {
+        zoom: false,
+        //myLocation: true,
+        //myLocationButton: true,
+        indoorPicker: true,
+        mapToolbar: true,
+        compass: false
+      },
+      camera: {
+        target: { lat: 14.087963, lng: -87.182993 },
+        zoom: 15,
+        //tilt: 30
+      }
+    };
+
+    this.map = GoogleMaps.create('map_canvas', mapOptions);
 
   }
 
@@ -129,10 +147,6 @@ export class ProfilePage extends ProtectedPage {
     // Create a map
     // after the view is ready
     // and the native platform is ready.
-
-
-
-
     let POINTS: BaseArrayClass<any> = new BaseArrayClass<any>([
       {
         position: { lat: 14.0746752, lng: -87.1923712 },
@@ -242,20 +256,17 @@ export class ProfilePage extends ProtectedPage {
   }
 
   locate(): void {
+    this.movedCamera = false;
     this.getCurrentFirebaseLocation();
 
-    this.loadMap();
+    //this.loadMap();
 
-    this.myLocationMarker = this.map.addMarkerSync({
-      position: { lat: 14.09304594, lng: -87.22221311 },
-      icon: {
-        url: "./assets/icon/taxi-icon.png",
-        size: {
-          width: 24,
-          height: 24
-        }
-      }
-    });
+    if (this.myLocationMarker != null) {
+      this.myLocationMarker.remove();
+      this.myLocationMarker = null;
+    }
+
+    
 
     if (this.locating == false) {
       console.log("Locating Vehicle with id: " + this.vehicle.id);
@@ -279,8 +290,24 @@ export class ProfilePage extends ProtectedPage {
           console.log("My location changed to " + [data.coords.latitude, data.coords.longitude]);
         });
 
-        this.myLocationMarker.setPosition( { lat: this.latitude, lng: this.longitude });
+        if (this.movedCamera == false) {
+          this.myLocationMarker = this.map.addMarkerSync({
+            position: { lat: this.latitude, lng: this.longitude },
+            icon: {
+              url: "./assets/icon/taxi-icon.png",
+              size: {
+                width: 24,
+                height: 24
+              }
+            }
+          });
+          this.map.moveCamera({
+            target: { lat: this.latitude, lng: this.longitude },
+          });
+          this.movedCamera = true;
+        }
 
+        this.myLocationMarker.setPosition({ lat: this.latitude, lng: this.longitude });
       });
 
       /*
@@ -293,6 +320,10 @@ export class ProfilePage extends ProtectedPage {
       */
     } else {
       console.log("Stopped Locating");
+      if (this.myLocationMarker != null) {
+        this.myLocationMarker.remove();
+        this.myLocationMarker = null;
+      }
       this.LocateButtonText = "Ubicar";
       this.locating = false;
       this.subscription.unsubscribe();

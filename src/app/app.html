@@ -9,10 +9,14 @@
           <p class="e-mail">{{user.email}}</p>
         </div>
         <ion-list no-lines>
-          <button menuClose="left" ion-item detail-none *ngFor="let p of pages" (click)="openPage(p)">
-          <ion-icon [name]="p.icon" item-left></ion-icon>
-          {{p.title}}
-        </button>
+          <button menuClose="left" ion-item detail-none *ngFor="let p of pages" (click)="openPage(p)">            
+            <ion-icon [name]="p.icon" item-left></ion-icon>
+            {{p.title}}
+          </button>
+          <button menuClose="left" ion-item detail-none (click)="logOut()">
+              <ion-icon name="log-out" item-left></ion-icon>
+              Cerrar Sesión
+          </button>
         </ion-list>
       </ion-content>
     </ion-menu>

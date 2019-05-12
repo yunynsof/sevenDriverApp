@@ -34,7 +34,6 @@ import { FirestoreProvider } from '../providers/firestore/firestore';
 
 import { GoogleMaps } from "@ionic-native/google-maps";
 
-
 let storage = new Storage({});
 
 export function getAuthHttp(http) {
@@ -92,7 +91,7 @@ const firebase = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     FcmProvider,
     AuthService,
-    FirestoreProvider  
+    FirestoreProvider
   ]
 })
 export class AppModule {}

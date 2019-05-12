@@ -5,42 +5,58 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-    <ion-toolbar color="primary">
-      <button ion-button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-      </button>
-      <ion-title>{{title}}</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
 
-    <ion-card *ngFor="let ride of rides | async">
-          <ion-card-header>
-            Pasajero: {{ ride.passengerName }}
-          </ion-card-header>
-          <ion-card-content>
-        <img src="{{'https://www.mapquestapi.com/staticmap/v5/map?locations=' + ride.startLatitude + ',' + ride.startLongitude + '|marker-red-sm||'+ ride.endLatitude + ',' + ride.endLongitude +'|marker-green-sm&size=400,400@2x&key=xCWYeJI1dvNUx03nPZOTr4zgEN9J45ye'}}">
+  <ion-card *ngFor="let ride of rides | async">
+    <ion-card-header>
+      <ion-list-header text-wrap>
+        <ion-avatar item-start (click)="updateProfileImage()">
+          <img src="../../assets/img/avatar/user.png" />
+        </ion-avatar>
+        <h2>Pasajero</h2>
+        <p>{{ ride.passengerName }}</p>
+      </ion-list-header>
       
-        <div class="card-profile_user-stats">
-            <div class="stats-holder">
-              <div class="user-stats">
-                <strong>Pasajeros</strong>
-                <span>{{ ride.numberOfPassengers }}</span>
-              </div>
-              <div class="user-stats">
-                <strong>Equipaje</strong>
-                <span>{{ ride.baggage }}</span>
-              </div>
-            </div>
-          </div>
+    </ion-card-header>
+    <ion-card-content>
 
-      </ion-card-content>
+      <div> 
+        <img src="{{'https://www.mapquestapi.com/staticmap/v5/map?locations=' + ride.startLatitude + ',' + ride.startLongitude + '|marker-red-sm||'+ ride.endLatitude + ',' + ride.endLongitude +'|marker-green-sm&size=400,400@2x&key=xCWYeJI1dvNUx03nPZOTr4zgEN9J45ye'}}">
+      </div>
 
-      <ion-card-content>
-          <button ion-button full>Confirmar Carrera</button>
-        </ion-card-content>
-        
-      </ion-card>
+      <ion-item (click)="placeTapped(place)" text-wrap>
+        <ion-icon color="danger" name="md-pin" item-start></ion-icon>
+        <h2>Orígen</h2>
+        <p>{{ ride.startAddress }}</p>
+      </ion-item>
+
+      <ion-item (click)="placeTapped(place)" text-wrap>
+        <ion-icon color="secondary" name="md-pin" item-start></ion-icon>
+        <h2>Destino</h2>
+        <p>{{ ride.endAddress }}</p>
+      </ion-item>
+
+      <ion-item actions>
+          <span item-end ion-text color="secondary" class="item-bold">Precio: L. {{ ride.fee }} </span>
+          <span item-start ion-text color="subtle"> Pasajeros: {{ ride.numberOfPassengers }} </span>          
+        </ion-item>
+
+      
+
+    </ion-card-content>
+
+    <ion-card-content>
+      <button ion-button full (click)="confirmRide(ride.startLatitude, ride.startLongitude)">Confirmar Carrera</button>
+    </ion-card-content>
+
+  </ion-card>
 
 </ion-content>
