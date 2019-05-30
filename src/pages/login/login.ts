@@ -6,11 +6,15 @@ import {AuthService} from '../../providers/auth-service/auth-service';
 
 import {UserModel} from '../../models/user.model';
 
+import {PassengerModel} from '../../models/passenger.model';
+
 import { HomePage } from '../../pages/home/home';
 
 import { ProfilePage } from '../../pages/profile/profile';
 
 import { Events } from 'ionic-angular';
+
+import { Geolocation } from '@ionic-native/geolocation';
 
 
 @Component({
@@ -21,6 +25,7 @@ export class LoginPage {
 
   private loginData: FormGroup;
   public user: UserModel;
+  public passenger: PassengerModel;
   public backgroundImage = 'assets/img/background/background-7.jpg';
 
   constructor(
@@ -30,7 +35,8 @@ export class LoginPage {
     public storage: Storage,
     public formBuilder: FormBuilder,
     public authService: AuthService,
-    public events: Events) {
+    public events: Events, 
+    private geolocation: Geolocation) {
 
     this.loginData = this.formBuilder.group({
       username: ['', Validators.compose([Validators.required])],
@@ -41,6 +47,19 @@ export class LoginPage {
   ionViewDidLoad() {
     //hide menu when on the login page, regardless of the screen resolution
     this.menuCtrl.enable(false);
+    this.geolocation.getCurrentPosition().then((resp) => {});
+  }
+
+  register(){
+    //this.passenger.email = "Correo";
+    //this.passenger.identifier = "080182093213";
+
+    this.passenger = new PassengerModel("94950000", "080119861775111" ,"mmzepedab@hotmail.com", "Mario", "Zepeda", "Q1w2e3r4t5@");
+    this.authService.register(this.passenger);
+
+    console.log(JSON.stringify(this.passenger));
+
+
   }
 
   login() {

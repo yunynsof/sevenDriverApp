@@ -4,10 +4,16 @@ import {Storage} from '@ionic/storage';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/throw';
 import {UserModel} from '../../models/user.model';
+import {PassengerModel} from '../../models/passenger.model';
 import {CredentialsModel} from '../../models/credentials.model';
 import {JwtHelper, tokenNotExpired} from 'angular2-jwt';
 import { Observable } from 'rxjs';
 import *  as AppConfig from '../../app/config';
+
+import { FcmProvider } from '../../providers/fcm/fcm';
+
+import {Platform} from 'ionic-angular';
+
 
 @Injectable()
 export class AuthService {
@@ -21,7 +27,9 @@ export class AuthService {
   constructor(
     private storage: Storage,
     private http: Http,
-    private jwtHelper:JwtHelper) {
+    private jwtHelper:JwtHelper,
+    public fcm: FcmProvider,
+    public platform: Platform) {
 
     this.cfg = AppConfig.cfg;
     this.storage.get('id_token').then(token => {
@@ -34,15 +42,16 @@ export class AuthService {
 
   }
 
-  register(userData: UserModel) {
-
-    return this.http.post(this.cfg.apiUrl + this.cfg.user.register, userData)
+  register(passengerData: PassengerModel) {
+    console.log("Registring to: " + this.cfg.apiUrl + this.cfg.user.register)
+    return this.http.post(this.cfg.apiUrl + this.cfg.user.register, passengerData)
       .toPromise()
       .then(data => {
-        this.saveData(data)
+        //this.saveData(data)
         let rs = data.json();
-        this.idToken = rs.token;
-        this.scheduleRefresh();
+        console.log(JSON.stringify(rs));
+        //this.idToken = rs.token;
+        //this.scheduleRefresh();
       })
       .catch(e => console.log("reg error", e));
 
@@ -58,7 +67,7 @@ export class AuthService {
          this.saveData(data);
          this.idToken = rs.access;
          this.refreshToken = rs.refresh;
-         this.scheduleRefresh();
+         this.scheduleRefresh();         
       })
       .catch(e => {throw(e)});
   }
@@ -67,6 +76,11 @@ export class AuthService {
   saveData(data: any) {
 
     let rs = data.json();
+
+    if(this.platform.is('cordova')) {
+      // Get a FCM token
+      this.fcm.getToken(this.jwtHelper.decodeToken(rs.access).user_id);
+    }
 
     this.storage.set("user_id", this.jwtHelper.decodeToken(rs.access).user_id);
     this.storage.set("firstName", this.jwtHelper.decodeToken(rs.access).firstName);
@@ -79,6 +93,8 @@ export class AuthService {
   logout() {
     // stop function of auto refesh
     this.unscheduleRefresh();
+    
+    this.fcm.removeTokenFromFirestore();
     this.storage.remove('user_id');
     this.storage.remove('firstName');
     this.storage.remove('lastName');

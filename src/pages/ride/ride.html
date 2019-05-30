@@ -1,0 +1,107 @@
+<!--
+  Generated template for the PickUpArriving page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+
+<ion-header>
+  <ion-toolbar color="theme-color">
+    <ion-buttons start>
+      <button ion-button icon-only clear (click)="goBack()">
+        <ion-icon name="arrow-round-back" left>
+        </ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Unidad en Camino</ion-title>
+  </ion-toolbar>
+</ion-header>
+-->
+<ion-header>
+  <ion-toolbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Carrera Activa</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+<div id="map_canvas">
+</div>
+<ion-fab right class="fab-icon-style box-shadow" style="top: 34%;" >
+  <ion-icon class="small-icon font-city-cab-2 margin-top-10p-fab"  ios="ios-locate" md="md-locate" ></ion-icon>
+</ion-fab>
+<ion-item >
+    <ion-row class="padding-left-16p">
+    <ion-icon ios="md-information-circle" md="md-information-circle"></ion-icon>
+    <h4 class="padding-left-16p">
+      <b>Estado: </b> {{ status }}
+    </h4>
+    </ion-row>
+    <button ion-button (click)="locate()" item-end>
+      {{LocateButtonText}}
+      </button>
+  </ion-item>
+<ion-item *ngIf="(ride | async)?.driverName != ''">
+  <ion-avatar item-left>
+    <img class="margin-left-15" src="assets/img/avatar/user.png">
+  </ion-avatar>
+  <h2>{{ (ride | async)?.driverName }}</h2>
+  <ion-row>
+    <ion-icon class="s-font" ios="ios-star" md="md-star"></ion-icon>
+    <ion-icon class="s-font" ios="ios-star" md="md-star"></ion-icon>
+    <ion-icon class="s-font" ios="ios-star" md="md-star"></ion-icon>
+    <ion-icon class="s-font" ios="ios-star" md="md-star"></ion-icon>
+    <ion-icon class="s-font" ios="ios-star" md="md-star"></ion-icon>
+  </ion-row>
+  <p style="font-size: 1.2rem;">{{ (ride | async)?.vehicleName }}</p>
+  <ion-fab top right>
+    <p class="green"> <b>Placa: </b> {{ (ride | async)?.vehicleRegister }} </p>
+  </ion-fab>
+  <ion-fab bottom right>
+    <ion-icon ios="ios-call" md="md-call"></ion-icon>
+  </ion-fab>
+</ion-item>
+<ion-item text-wrap>
+  <ion-row class="padding-left-16p">
+  <ion-icon ios="ios-pin" md="md-pin"></ion-icon>
+  <h4 class="padding-left-16p">
+    <b>Destino: </b> {{ (ride | async)?.endAddress }}
+  </h4>
+  </ion-row>
+</ion-item>
+<ion-item>
+  <ion-row style="padding-left: 26px!important;">
+    <ion-col col-2>
+      <div style="text-align: center">
+        <ion-icon ios="md-cash" md="md-cash" style="font-size: 2em;color: #364F6B"></ion-icon>
+        <h3> L. {{ (ride | async)?.fee }} </h3>
+        <p class="small-8-font"> Precio </p>
+      </div>
+    </ion-col>
+    <div class="pick-up-line"></div>
+    <ion-col col-2>
+      <div style="text-align: center">
+        <ion-icon ios="md-briefcase" md="md-briefcase" style="font-size: 2em;color: #364F6B "></ion-icon>
+        <h3> {{ (ride | async)?.baggage }} </h3>
+        <p class=" status-p" > Equipaje </p>
+      </div>
+    </ion-col>
+    <div class="pick-up-line"></div>
+    <ion-col col-2>
+      <div style="text-align: center">
+        <ion-icon ios="ios-man" md="md-man" style="font-size: 2em;color: #364F6B "></ion-icon>
+        <h3 > {{ (ride | async)?.numberOfPassengers }} </h3>
+        <p class="small-8-font"> Pasajeros </p>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-item>
+<div style="height: 100px"></div>
+</ion-content>
+<ion-footer padding >
+<button color="primary" class="border-radius-5" ion-button full (click)="waitingPassenger(rideId) " *ngIf="statusId == 2">Esperar Cliente</button>
+<button color="primary" class="border-radius-5" ion-button full (click)="startRide(rideId) " *ngIf="statusId == 3">Empezar Carrera</button>
+<button color="primary" class="border-radius-5" ion-button full (click)="endRide(rideId) " *ngIf="statusId == 4">Finalizar Carrera</button>
+
+
+</ion-footer>

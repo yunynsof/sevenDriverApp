@@ -21,6 +21,10 @@ import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { Firebase } from '@ionic-native/firebase';
+import { RidesPage } from '../pages/rides/rides';
+import { RidePage } from '../pages/ride/ride';
+
+
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -33,6 +37,11 @@ import { AlertService } from '../providers/util/alert.service';
 import { FirestoreProvider } from '../providers/firestore/firestore';
 
 import { GoogleMaps } from "@ionic-native/google-maps";
+
+import { Device } from '@ionic-native/device';
+import { RidesPageModule } from '../pages/rides/rides.module';
+import { RidePageModule } from '../pages/ride/ride.module';
+
 
 let storage = new Storage({});
 
@@ -66,12 +75,16 @@ const firebase = {
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     HttpModule,
-    HttpClientModule  
+    HttpClientModule,
+    RidesPageModule,
+    RidePageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    LoginPage
+    LoginPage,
+    RidesPage,
+    RidePage
   ],
   providers: [
     StatusBar,
@@ -91,7 +104,8 @@ const firebase = {
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     FcmProvider,
     AuthService,
-    FirestoreProvider
+    FirestoreProvider,
+    Device
   ]
 })
 export class AppModule {}

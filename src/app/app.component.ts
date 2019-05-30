@@ -100,24 +100,19 @@ export class MyApp {
         
 
         if(platform.is('cordova')) {
-          // Get a FCM token
-          fcm.getToken()     
-
-          // Listen to incoming messages
-          fcm.listenToNotifications().pipe(
-              tap(msg => {
-                // show a toast
-                const toast = toastCtrl.create({
-                  message: msg["body"],
-                  duration: 3000
-                });
-                toast.present();
-              })
-            )
-            .subscribe();
-
-            
-        }
+            // Listen to incoming messages
+            fcm.listenToNotifications().pipe(
+                tap(msg => {
+                  // show a toast
+                  const toast = toastCtrl.create({
+                    message: msg["body"],
+                    duration: 3000
+                  });
+                  toast.present();
+                })
+              )
+              .subscribe();            
+          }
       });
     
 
@@ -135,6 +130,7 @@ export class MyApp {
       ];
 
       this.pages = [
+        { title: 'Carrera Activa', component: 'RidePage', active: false, icon: 'car' },
         { title: 'Carreras Disponibles', component: 'RidesPage', active: false, icon: 'map' },
         { title: 'Perfil', component: 'ProfilePage', active: true, icon: 'contact' },
         { title: 'Historial', component: 'RidesPage', active: false, icon: 'list-box' },
@@ -174,6 +170,9 @@ export class MyApp {
       this.vehicle.id = data.vehicle.id;
       this.vehicle.register = data.vehicle.register;
       this.vehicle.number = data.vehicle.number;
+      this.storage.set("vehicle_id", this.vehicle.id);
+      this.storage.set("register", this.vehicle.register);
+      this.storage.set("number", this.vehicle.number);
     })
   }
 

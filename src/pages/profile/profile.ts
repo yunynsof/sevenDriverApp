@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { ProtectedPage } from '../protected-page/protected-page';
 
 import { Observable } from 'rxjs-compat';
@@ -27,8 +27,6 @@ import { FcmProvider } from '../../providers/fcm/fcm';
 import { ToastController } from 'ionic-angular';
 import { Subject } from 'rxjs-compat/Subject';
 import { tap } from 'rxjs-compat/operators/tap';
-
-import { Platform } from 'ionic-angular';
 
 import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapsAnimation, MyLocation, Environment, GoogleMapOptions, BaseArrayClass, ILatLng } from '@ionic-native/google-maps';
 
@@ -106,13 +104,14 @@ export class ProfilePage extends ProtectedPage {
     public toastCtrl: ToastController,
     private myFirebase: Firebase,
     private af: AngularFireDatabase,
-    private platform: Platform
+    private platform: Platform,
   ) { super(navCtrl, storage); }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
     //this.environment = new Environment();
     //this.environment.setBackgroundColor("#303030");
+
     this.getUserInfo();
     this.watch = this.geolocation.watchPosition({ enableHighAccuracy: true });
     let mapOptions: GoogleMapOptions = {
@@ -134,6 +133,7 @@ export class ProfilePage extends ProtectedPage {
     this.map = GoogleMaps.create('map_canvas', mapOptions);
 
   }
+  
 
   loadMap() {
     // If you want to run your app

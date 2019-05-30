@@ -79,7 +79,6 @@
     </platform>
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
     <plugin name="cordova-plugin-statusbar" spec="2.4.2" />
-    <plugin name="cordova-plugin-device" spec="2.0.2" />
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^3.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
@@ -92,7 +91,9 @@
     </plugin>
     <allow-navigation href="http://192.168.0.30:8100" />
     <plugin name="cordova-plugin-insomnia" spec="^4.3.0" />
-    <engine name="browser" spec="5.0.4" />
     <plugin name="cordova-plugin-firebase" spec="https://github.com/dpa99c/cordova-plugin-firebase#GH-1057-April-05-android-build-issue" />
-    <engine name="android" spec="~7.0.0" />
+    <plugin name="cordova-plugin-uniquedeviceid" spec="^1.3.2" />
+    <plugin name="cordova-plugin-device" spec="^2.0.2" />
+    <engine name="browser" spec="5.0.4" />
+    <engine name="android" spec="7.0.0" />
 </widget>
