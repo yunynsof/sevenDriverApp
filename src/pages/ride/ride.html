@@ -43,7 +43,7 @@
   </ion-item>
 <ion-item *ngIf="(ride | async)?.driverName != ''">
   <ion-avatar item-left>
-    <img class="margin-left-15" src="assets/img/avatar/user.png">
+    <img style="margin-left: 15px !important;" src="https://45.56.125.220/admin/taxiadmin/driver/{{ (ride | async)?.driverId }}/image/">
   </ion-avatar>
   <h2>{{ (ride | async)?.driverName }}</h2>
   <ion-row>

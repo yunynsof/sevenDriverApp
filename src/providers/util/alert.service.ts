@@ -12,7 +12,7 @@ export class AlertService {
         subTitle: message,
         buttons: [
           {
-            text: 'OK'
+            text: 'Aceptar'
           }
         ]
       });

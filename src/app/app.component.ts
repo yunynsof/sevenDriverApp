@@ -46,7 +46,11 @@ export class MyApp {
   vehicle = {
     id: '',
     register: '',
-    number: ''
+    number: '',
+    year: '',
+    color: '',
+    model: '',
+    made: ''
   }
 
   driver: Observable<any>;
@@ -170,9 +174,17 @@ export class MyApp {
       this.vehicle.id = data.vehicle.id;
       this.vehicle.register = data.vehicle.register;
       this.vehicle.number = data.vehicle.number;
+      this.vehicle.year = data.vehicle.year;
+      this.vehicle.color = data.vehicle.color;
+      this.vehicle.model = data.vehicle.model;
+      this.vehicle.made = data.vehicle.made;
       this.storage.set("vehicle_id", this.vehicle.id);
       this.storage.set("register", this.vehicle.register);
       this.storage.set("number", this.vehicle.number);
+      this.storage.set("year", this.vehicle.year);
+      this.storage.set("color", this.vehicle.color);
+      this.storage.set("model", this.vehicle.model);
+      this.storage.set("made", this.vehicle.made);
     })
   }
 

@@ -160,7 +160,11 @@ export class RidesPage {
               this.storage.get("id_token"),
               this.storage.get("vehicle_id"),
               this.storage.get("register"),
-              this.storage.get("number")]
+              this.storage.get("number"),
+              this.storage.get("year"),
+              this.storage.get("color"),
+              this.storage.get("model"),
+              this.storage.get("made")]
               ).then(values => {
               console.log("User ID", values[0]);
               console.log("First Name", values[1]);
@@ -171,9 +175,13 @@ export class RidesPage {
               let vehicle_id = values[5];
               let register = values[6];
               let number = values[7];
+              let year = values[8];
+              let color = values[9];
+              let model = values[10];
+              let made = values[11];
               //this.getDriverInfo();
               var ride = this.firestoreProvider.getRide(rideId);
-              ride.update({ status: 2, driverName: name, driverId: user_id, vehicleName: "Turismo", vehicleRegister: register});
+              ride.update({ status: 2, driverName: name, driverId: user_id, vehicleRegister: register, vehicleId: vehicle_id, vehicleName: `${made} ${model} año ${year} color ${color}` });
               this.subscription.unsubscribe();
               this.updateRides();
             });
