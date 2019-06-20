@@ -9,6 +9,8 @@ import { Observable } from 'rxjs';
 
 import { Ride } from '../../models/ride.model';
 
+import { Device } from '../../models/device.model';
+
 import { FirestoreProvider as RideServiceProvider } from '../../providers/firestore/firestore';
 
 import { Geolocation } from '@ionic-native/geolocation';
@@ -21,6 +23,10 @@ import { Firebase } from '@ionic-native/firebase';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 
 import { RidesPage } from '../../pages/rides/rides';
+
+import { Insomnia } from '@ionic-native/insomnia';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 /**
@@ -46,7 +52,8 @@ export class RidePage {
   public rideId;
 
   public status;
-  public statusId;
+  public statusId; 
+  public passengerId;
 
   watch: any;
   subscription: any;
@@ -77,17 +84,19 @@ export class RidePage {
     number: ''
   }
 
-  markerAdded:boolean = false;
+  markerAdded: boolean = false;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     public storage: Storage,
     public firestore: AngularFirestore,
     public rideServiceProvider: RideServiceProvider,
     private geolocation: Geolocation,
     private af: AngularFireDatabase,
-    public app: App) {
+    public app: App,
+    private insomnia: Insomnia,
+    private http: HttpClient) {
   }
 
   ionViewDidLoad() {
@@ -112,12 +121,24 @@ export class RidePage {
 
     this.map = GoogleMaps.create('map_canvas', mapOptions);
 
+    this.insomnia.keepAwake()
+      .then(
+        () => console.log('success'),
+        () => console.log('error')
+      );
+
   }
 
-  ionViewWillLeave(){
-    if(this.subscription){
+  ionViewWillLeave() {
+    if (this.subscription) {
       this.subscription.unsubscribe();
     }
+
+    this.insomnia.allowSleepAgain()
+      .then(
+        () => console.log('success'),
+        () => console.log('error')
+      );
   }
 
   ionViewWillEnter() {
@@ -139,18 +160,19 @@ export class RidePage {
           console.log("Doc Id: " + id);
           console.log("Status: " + data.status);
           this.statusId = data.status;
+          this.passengerId = data.passengerId;
           this.translateStatus(data.status);
           //this.loadMap(data.startLatitude, data.startLongitude, data.endLatitude, data.endLongitude);
-          if(!this.markerAdded){
+          if (!this.markerAdded) {
             this.addMarker(data.startLatitude, data.startLongitude, true);
             this.addMarker(data.endLatitude, data.endLongitude, false);
             this.markerAdded = true;
           }
-          
+
 
           var bounds = [
-            {"lat": parseFloat(data.startLatitude), "lng": parseFloat(data.startLongitude)},
-            {"lat": parseFloat(data.endLatitude), "lng": parseFloat(data.endLongitude)}
+            { "lat": parseFloat(data.startLatitude), "lng": parseFloat(data.startLongitude) },
+            { "lat": parseFloat(data.endLatitude), "lng": parseFloat(data.endLongitude) }
           ];
 
 
@@ -172,40 +194,100 @@ export class RidePage {
         } else {
           alert("Usted no tiene ninguna carrera activa");
           //this.appCtrl.getRootNav().push(CityCabPage);
-          this.app.getActiveNav().setRoot(RidesPage); 
+          this.app.getActiveNav().setRoot(RidesPage);
         }
       });
     });
-      //this.loadMap()
+    //this.loadMap()
   }
 
   translateStatus(status) {
     if (status == 1) {
       this.status = "Localizando Conductor";
-    } else if(status == 2){
+    } else if (status == 2) {
       this.status = "Conductor en Camino";
-    } else if(status == 3){
+    } else if (status == 3) {
       this.status = "Esperando pasajero";
-    }else if(status == 4){
+    } else if (status == 4) {
       this.status = "Carrera en Camino";
-    }else if(status == 5){
+    } else if (status == 5) {
       this.status = "Carrera Finalizada";
-    }else {
+    } else {
       this.status = "Pendiente";
     }
   }
 
-  waitingPassenger(rideId){
+  waitingPassenger(rideId) {
     if (rideId) {
       console.log("Ride to update: " + rideId);
       var ride = this.rideServiceProvider.getRide(rideId);
       ride.update({ status: 3 });
+      this.sendNotificationToPassenger();
     } else {
       alert("No tiene ninguna solicitud para cancelar");
     }
   }
 
-  startRide(rideId){
+  sendNotificationToPassenger(){
+    console.log(`PassengerId ${this.passengerId}`);
+    const devicesRef = this.firestore.collection('devices', ref => ref.where('userId', '==', parseInt(this.passengerId)));
+      console.log("Collection ref: " + devicesRef);
+      var docId = devicesRef.snapshotChanges().map(changes => {
+        return changes.map(a => {
+          const data = a.payload.doc.data() as Device;
+          const id = a.payload.doc.id;
+          console.log("Doc Id of Devices: " + id);
+          console.log("Passenger Token: " + data.token);
+          
+          const httpOptions = {
+            headers: new HttpHeaders({
+              'Content-Type':  'application/json',
+              'Authorization': 'key=AAAAh-MeXCI:APA91bF5Sluxx0bywxpgthmjruvmoL_2DziPB9Xr3a9qmBXyO1i-LO0WWr78fgNPLDIx6DBdTk5vkkCZXfiri08vKL-1rRWFSHCANd3BSr03cFjfZ7iv08007xSfgzZtsfU1LvEf3su8'
+            })
+          };
+      
+          this.http.post('https://fcm.googleapis.com/fcm/send', {
+            "notification":{
+              "title":"Unidad Lista",
+              "body":"Su unidad esta lista esperando en el lugar de orígen.",
+              "sound":"default",
+              "click_action":"FCM_PLUGIN_ACTIVITY",
+              "icon":"fcm_push_icon"
+            },
+            "data":{
+              "param1":"value1",
+              "param2":"value2"
+            },
+              "to":data.token,
+              "priority":"high",
+              "restricted_package_name":"com.seven.passengerapp",
+          },httpOptions).subscribe((response) => {
+            console.log(response);
+          });
+
+
+          return { data };
+        });
+      });
+
+      const subscription = docId.subscribe(docs => {
+        if (docs.length > 0) {
+          docs.forEach(doc => {
+            console.log(doc.data);
+            console.log("Device data where passenger");
+            //console.log(doc.status);           
+          })
+        } else {
+          //alert("Usted no tiene ninguna carrera activa");
+          //this.appCtrl.getRootNav().push(CityCabPage);
+          //this.app.getActiveNav().setRoot(RidesPage);
+        }
+      });
+
+      //subscription.unsubscribe();
+  }
+
+  startRide(rideId) {
     if (rideId) {
       console.log("Ride to update: " + rideId);
       var ride = this.rideServiceProvider.getRide(rideId);
@@ -215,7 +297,7 @@ export class RidePage {
     }
   }
 
-  endRide(rideId){
+  endRide(rideId) {
     if (rideId) {
       console.log("Ride to update: " + rideId);
       var ride = this.rideServiceProvider.getRide(rideId);
@@ -234,12 +316,12 @@ export class RidePage {
       url = "assets/icon/red-dot.png";
     } else {
       content = "<h4>Destino</h4>";
-      url =  "assets/icon/green-dot.png";
+      url = "assets/icon/green-dot.png";
     }
 
     this.map.addMarker({
-      position: {lat: lat, lng: lng},
-      icon: { url : url },
+      position: { lat: lat, lng: lng },
+      icon: { url: url },
       animation: GoogleMapsAnimation.BOUNCE
     });
 
@@ -258,7 +340,7 @@ export class RidePage {
       this.myLocationMarker = null;
     }
 
-    
+
 
     if (this.locating == false) {
       console.log("Locating Vehicle with id: " + this.vehicle.id);

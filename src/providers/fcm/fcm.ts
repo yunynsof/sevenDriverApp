@@ -40,6 +40,7 @@ export class FcmProvider {
     const docData = {
       token,
       userId: userId,
+      userType: "driver",
       deviceId: this.device.uuid
     }
 

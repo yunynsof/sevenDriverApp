@@ -42,6 +42,8 @@ import { Device } from '@ionic-native/device';
 import { RidesPageModule } from '../pages/rides/rides.module';
 import { RidePageModule } from '../pages/ride/ride.module';
 
+import { Insomnia } from '@ionic-native/insomnia';
+
 
 let storage = new Storage({});
 
@@ -105,7 +107,8 @@ const firebase = {
     FcmProvider,
     AuthService,
     FirestoreProvider,
-    Device
+    Device,
+    Insomnia
   ]
 })
 export class AppModule {}
