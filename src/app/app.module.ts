@@ -44,6 +44,8 @@ import { RidePageModule } from '../pages/ride/ride.module';
 
 import { Insomnia } from '@ionic-native/insomnia';
 
+import { CallNumber } from '@ionic-native/call-number';
+
 
 let storage = new Storage({});
 
@@ -108,7 +110,8 @@ const firebase = {
     AuthService,
     FirestoreProvider,
     Device,
-    Insomnia
+    Insomnia,
+    CallNumber
   ]
 })
 export class AppModule {}

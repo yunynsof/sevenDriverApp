@@ -15,50 +15,70 @@
 
 <ion-content>
 
-  <!--   To use when using snapshotValues() -->
-  <!--   <ion-card *ngFor="let ride of rides | async"> -->
-  <ion-card *ngFor="let ride of rides">
-    <ion-card-header>
-      <ion-list-header text-wrap>
-        <ion-avatar item-start (click)="updateProfileImage()">
-          <img src="../../assets/img/avatar/user.png" />
+  <ion-grid *ngIf="rides?.length < 1">
+    <ion-row>
+      <ion-col text-center>
+        <h3 style="color:darkgrey">No existe ninguna solicitud.</h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div *ngIf="rides?.length > 0">
+    <!--   To use when using snapshotValues() -->
+    <!--   <ion-card *ngFor="let ride of rides | async"> -->
+    <ion-card *ngFor="let ride of rides">
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="../../assets/img/avatar/user.png">
         </ion-avatar>
-        <h2>Pasajero</h2>
-        <p>{{ ride.passengerName }}</p>
-      </ion-list-header>
-      
-    </ion-card-header>
-    <ion-card-content>
-
-      <div> 
-        <img src="{{'https://www.mapquestapi.com/staticmap/v5/map?locations=' + ride.startLatitude + ',' + ride.startLongitude + '|marker-red-sm||'+ ride.endLatitude + ',' + ride.endLongitude +'|marker-green-sm&size=400,400@2x&key=xCWYeJI1dvNUx03nPZOTr4zgEN9J45ye'}}">
-      </div>
-
-      <ion-item (click)="placeTapped(place)" text-wrap>
-        <ion-icon color="danger" name="md-pin" item-start></ion-icon>
-        <h2>Orígen</h2>
-        <p>{{ ride.startAddress }}</p>
+        <h2>{{ ride.passengerName }}</h2>
+        <p>{{ ride.requestedAt?.toDate() | date: 'medium' }}</p>
       </ion-item>
 
-      <ion-item (click)="placeTapped(place)" text-wrap>
-        <ion-icon color="secondary" name="md-pin" item-start></ion-icon>
-        <h2>Destino</h2>
-        <p>{{ ride.endAddress }}</p>
-      </ion-item>
+      <!--
+      <ion-card-header>
+        <ion-list-header text-wrap>
+          <ion-avatar item-start (click)="updateProfileImage()">
+            <img src="../../assets/img/avatar/user.png" />
+          </ion-avatar>
+          <h2>Pasajero</h2>
+          <p>{{ ride.passengerName }}</p>
+        </ion-list-header>
+      </ion-card-header>
+      -->
+      <ion-card-content>
 
-      <ion-item actions>
-          <span item-end ion-text color="secondary" class="item-bold">Precio: L. {{ ride.fee }} </span>
-          <span item-start ion-text color="subtle"> Pasajeros: {{ ride.numberOfPassengers }} </span>          
+        <div>
+          <img
+            src="{{'https://www.mapquestapi.com/staticmap/v5/map?locations=' + ride.startLatitude + ',' + ride.startLongitude + '|marker-red-sm||'+ ride.endLatitude + ',' + ride.endLongitude +'|marker-green-sm&size=400,400@2x&key=xCWYeJI1dvNUx03nPZOTr4zgEN9J45ye'}}">
+        </div>
+
+        <ion-item (click)="placeTapped(place)" text-wrap>
+          <ion-icon color="danger" name="md-pin" item-start></ion-icon>
+          <h2>Cliente</h2>
+          <p>{{ ride.startAddress }}</p>
         </ion-item>
 
-      
+        <ion-item (click)="placeTapped(place)" text-wrap>
+          <ion-icon color="secondary" name="md-pin" item-start></ion-icon>
+          <h2>Destino</h2>
+          <p>{{ ride.endAddress }}</p>
+        </ion-item>
 
-    </ion-card-content>
+        <ion-item actions>
+          <span item-end ion-text color="secondary" class="item-bold">Precio: L. {{ ride.fee }} </span>
+          <span item-start ion-text color="subtle"> Pasajeros: {{ ride.numberOfPassengers }} </span>
+        </ion-item>
 
-    <ion-card-content>
-      <button ion-button full (click)="confirmRide(ride.id, ride.startLatitude, ride.startLongitude)">Confirmar Carrera</button>
-    </ion-card-content>
 
-  </ion-card>
 
+      </ion-card-content>
+
+      <ion-card-content>
+        <button ion-button full (click)="confirmRide(ride.id, ride.startLatitude, ride.startLongitude)">Confirmar
+          Carrera</button>
+      </ion-card-content>
+
+    </ion-card>
+  </div>
 </ion-content>

@@ -1,5 +1,5 @@
 export let cfg = {
-  apiUrl: 'https://45.56.125.220/api',
+  apiUrl: 'https://www.seven.hn/api',
   tokenName: 'access',
   user: {
     register: '/v1/passengers/',

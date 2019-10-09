@@ -82,7 +82,8 @@ export class MyApp {
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
         //this.global.set('theme', 'theme-dark');
-        this.rootPage = 'ProfilePage';
+        //this.rootPage = 'ProfilePage';
+        this.rootPage = 'RidesPage';
         statusBar.styleDefault();
         splashScreen.hide();
         this.menuCtrl.enable(false, 'right');
@@ -164,13 +165,13 @@ export class MyApp {
   getDriverInfo(){
     console.log("Getting Driver Information");
 
-    this.driver = this.httpClient.get("https://45.56.125.220/api/v1/drivers/" + this.user.user_id + '/' , {
+    this.driver = this.httpClient.get("https://www.seven.hn/api/v1/drivers/" + this.user.user_id + '/' , {
       headers: {'Content-Type':'application/json','Authorization':'Bearer '+ this.idToken}
    });
     this.driver
     .subscribe(data => {
       console.log('my data: ', data);
-      this.user.imageUrl = "https://45.56.125.220/media/" + data.picture;
+      this.user.imageUrl = "https://www.seven.hn/media/" + data.picture;
       this.vehicle.id = data.vehicle.id;
       this.vehicle.register = data.vehicle.register;
       this.vehicle.number = data.vehicle.number;

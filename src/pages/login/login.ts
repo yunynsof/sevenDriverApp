@@ -15,6 +15,7 @@ import { ProfilePage } from '../../pages/profile/profile';
 import { Events } from 'ionic-angular';
 
 import { Geolocation } from '@ionic-native/geolocation';
+import { RidesPage } from '../rides/rides';
 
 
 @Component({
@@ -84,7 +85,7 @@ export class LoginPage {
 
   redirectToHome() {
     this.events.publish('user:created');
-    this.navCtrl.setRoot(ProfilePage);
+    this.navCtrl.setRoot(RidesPage);
     this.menuCtrl.enable(true);
   }
 

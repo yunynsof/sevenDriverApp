@@ -14,6 +14,7 @@ import {Storage} from '@ionic/storage';
 import { RidePage } from '../../pages/ride/ride';
 
 import { AlertService } from '../../providers/util/alert.service';
+import { ProtectedPage } from '../protected-page/protected-page';
 
 
 declare var google: any;
@@ -30,7 +31,7 @@ declare var google: any;
   selector: 'page-rides',
   templateUrl: 'rides.html',
 })
-export class RidesPage {
+export class RidesPage extends ProtectedPage {
 
   public rides = [];
 
@@ -50,14 +51,20 @@ export class RidesPage {
     private firestoreProvider: FirestoreProvider, 
     public loadingCtrl: LoadingController, 
     private geolocation: Geolocation,
-    private storage: Storage,
+    public storage: Storage,
     public app: App,
     public alertService: AlertService) {
+      super(navCtrl, storage);
+  }
+
+  ionViewWillEnter(){
+    console.log('ionViewWillEnter RidesPage');
+    this.updateRides();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RidesPage');
-    this.updateRides();
+    
   }
 
   ionViewWillLeave(){
@@ -103,6 +110,11 @@ export class RidesPage {
           //console.log(doc.status);  
           return doc.id;         
         })
+
+        if (docs.length < 1){
+          this.rides = [];
+        }
+
         /*
         if (docs.length > 0) {
           docs.forEach(doc => {

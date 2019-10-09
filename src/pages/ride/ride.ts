@@ -28,6 +28,8 @@ import { Insomnia } from '@ionic-native/insomnia';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import { CallNumber } from '@ionic-native/call-number';
+
 
 /**
  * Generated class for the RidePage page.
@@ -96,7 +98,8 @@ export class RidePage {
     private af: AngularFireDatabase,
     public app: App,
     private insomnia: Insomnia,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private callNumber: CallNumber) {
   }
 
   ionViewDidLoad() {
@@ -207,7 +210,7 @@ export class RidePage {
     } else if (status == 2) {
       this.status = "Conductor en Camino";
     } else if (status == 3) {
-      this.status = "Esperando pasajero";
+      this.status = "Unidad Afuera";
     } else if (status == 4) {
       this.status = "Carrera en Camino";
     } else if (status == 5) {
@@ -249,7 +252,7 @@ export class RidePage {
           this.http.post('https://fcm.googleapis.com/fcm/send', {
             "notification":{
               "title":"Unidad Lista",
-              "body":"Su unidad esta lista esperando en el lugar de orígen.",
+              "body":"Su unidad esta afuera.",
               "sound":"default",
               "click_action":"FCM_PLUGIN_ACTIVITY",
               "icon":"fcm_push_icon"
@@ -419,6 +422,26 @@ export class RidePage {
         this.fbLongitude = l[1];
       }
     });
+  }
+
+  call() {
+    console.log('Calling');
+    
+    this.http.get('https://seven.hn/api/v1/passengers/' + this.passengerId + '/')
+        .subscribe(res => {
+          //console.log(JSON.stringify(res));
+          console.log(res['phone']);
+          // If the API returned a successful response, mark the user as logged in
+          // this need to be fixed on Laravel project to retun the New Token ;
+          
+          this.callNumber.callNumber(res['phone'], true)
+            .then(res => console.log('Launched dialer!', res))
+            .catch(err => console.log('Error launching dialer', err));
+            
+        }, err => {
+          console.error('ERROR', err);
+        });
+        
   }
 
 }
