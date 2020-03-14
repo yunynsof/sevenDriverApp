@@ -135,8 +135,8 @@ export class MyApp {
       ];
 
       this.pages = [
-        { title: 'Carrera Activa', component: 'RidePage', active: false, icon: 'car' },
-        { title: 'Carreras Disponibles', component: 'RidesPage', active: false, icon: 'map' },
+        { title: 'Carrera Confirmada', component: 'RidePage', active: false, icon: 'car' },
+        { title: 'Carreras Pendientes', component: 'RidesPage', active: false, icon: 'map' },
         { title: 'Perfil', component: 'ProfilePage', active: true, icon: 'contact' },
         { title: 'Historial', component: 'RidesPage', active: false, icon: 'list-box' },
         { title: 'Ayuda', component: 'RidesPage', active: false, icon: 'help' }

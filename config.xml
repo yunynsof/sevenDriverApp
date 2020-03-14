@@ -98,7 +98,7 @@
     <plugin name="cordova-plugin-firebase-lib" spec="^4.0.0" />
     <plugin name="cordova-plugin-androidx" spec="^1.0.2" />
     <plugin name="cordova-plugin-androidx-adapter" spec="^1.0.2" />
+    <plugin name="mx.ferreyra.callnumber" spec="~0.0.2" />
     <engine name="android" spec="8.0.0" />
     <engine name="browser" spec="6.0.0" />
-    <plugin name="mx.ferreyra.callnumber" spec="~0.0.2" />
 </widget>

@@ -195,7 +195,7 @@ export class RidePage {
             //console.log(doc.status);           
           })
         } else {
-          alert("Usted no tiene ninguna carrera activa");
+          alert("Usted no tiene ninguna carrera confirmada");
           //this.appCtrl.getRootNav().push(CityCabPage);
           this.app.getActiveNav().setRoot(RidesPage);
         }
@@ -427,7 +427,7 @@ export class RidePage {
   call() {
     console.log('Calling');
     
-    this.http.get('https://seven.hn/api/v1/passengers/' + this.passengerId + '/')
+    this.http.get('https://seven.hn/api/v1/passengers/' + this.passengerId)
         .subscribe(res => {
           //console.log(JSON.stringify(res));
           console.log(res['phone']);

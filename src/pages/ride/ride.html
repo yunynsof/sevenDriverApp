@@ -110,8 +110,8 @@
 </ion-content>
 <ion-footer padding >
 <button color="primary" class="border-radius-5" ion-button full (click)="waitingPassenger(rideId) " *ngIf="statusId == 2">Esperar Cliente</button>
-<button color="primary" class="border-radius-5" ion-button full (click)="startRide(rideId) " *ngIf="statusId == 3">Empezar Carrera</button>
-<button color="primary" class="border-radius-5" ion-button full (click)="endRide(rideId) " *ngIf="statusId == 4">Finalizar Carrera</button>
+<button color="secondary" class="border-radius-5" ion-button full (click)="startRide(rideId) " *ngIf="statusId == 3">Iniciar Carrera</button>
+<button color="secondary" class="border-radius-5" ion-button full (click)="endRide(rideId) " *ngIf="statusId == 4">Terminar Carrera</button>
 
 
 </ion-footer>

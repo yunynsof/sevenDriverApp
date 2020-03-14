@@ -159,7 +159,7 @@ export class RidesPage extends ProtectedPage {
       //loaderPassenger.present();
       //alert(rideId);
       this.alertService.presentAlertWithCallback('Aceptar Carrera',
-      'Esta Seguro que desea aceptar esta carrera?').then((yes) => {
+      'Estas seguro qu deseas tomar esta carrera?').then((yes) => {
         if (yes) {
           if (rideId) {
             console.log("Ride to update Status: " + rideId);
@@ -176,8 +176,8 @@ export class RidesPage extends ProtectedPage {
               this.storage.get("year"),
               this.storage.get("color"),
               this.storage.get("model"),
-              this.storage.get("made")]
-              ).then(values => {
+              this.storage.get("made")
+            ]).then(values => {
               console.log("User ID", values[0]);
               console.log("First Name", values[1]);
               let user_id = values[0];
@@ -193,6 +193,19 @@ export class RidesPage extends ProtectedPage {
               let made = values[11];
               //this.getDriverInfo();
               var ride = this.firestoreProvider.getRide(rideId);
+
+              const devicesRef = this.firestoreProvider.getRide(rideId).snapshotChanges().map((actions: any) => {
+                return actions.map(a => {
+                  this.rides = [];
+                  const data = a.payload.doc.data() as Ride;
+                  const id = a.payload.doc.id;
+                  console.log("Doc Id: " + id);
+                  console.log("Passegner Token: " + data.passengerId);
+                  alert(data.passengerId);
+                  return {id, ...data};
+                });
+              });
+              
               ride.update({ status: 2, driverName: name, driverId: user_id, vehicleRegister: register, vehicleId: vehicle_id, vehicleName: `${made} ${model} año ${year} color ${color}` });
               this.subscription.unsubscribe();
               this.updateRides();
