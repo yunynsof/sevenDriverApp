@@ -1,34 +1,47 @@
 <ion-header>
-    <ion-toolbar color="primary">
-      <button ion-button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-      </button>
-      <ion-title>Perfil</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
-  <ion-list>
-    <ion-list-header text-wrap>
-      <ion-avatar item-start (click)="updateProfileImage()">
-        <img [src]="user.imageUrl ? user.imageUrl : placeholderPicture" >
-      </ion-avatar>
-      <h2>{{user.name}}</h2>
-      <p>{{user.email}}</p>
-    </ion-list-header>
-    <ion-item>
-        <h2>Calificación</h2>
-        <ionic3-star-rating 
-            activeIcon = "star"
-            defaultIcon = "star-outline"
-            activeColor = "#FFE819" 
-            defaultColor = "#f4f4f4"
-            readonly="true"
-            [rating]="3"
-            item-end>
-        </ionic3-star-rating>
-    </ion-item>
-  </ion-list>
 
+  <div class="divUser">
+    <br>
+    <div class="ProfileAvatr">
+      <ion-avatar (click)="updateProfileImage()">
+        <div>
+          <img class="formImg" [src]="user.imageUrl ? user.imageUrl : placeholderPicture">
+        </div>
+      </ion-avatar>
+    </div>
+    <ionic3-star-rating activeIcon="ios-star" defaultIcon="ios-star-outline" activeColor="#dbcd07"
+      defaultColor="#aaaaaa" readonly="true" [rating]="rating" fontSize="32px">
+    </ionic3-star-rating>
+  </div>
+  <div class="test">
+    <div class="divUserData">
+      <h2>{{user.name}}</h2>
+      <ion-label>
+        <ion-icon name="person"></ion-icon>
+        Conductor Seven
+      </ion-label>
+      <ion-label>
+        <ion-icon name="mic"></ion-icon>
+        Español
+      </ion-label>
+      <ion-label>
+        <ion-icon name="mail-open"></ion-icon>
+        {{user.email}}
+      </ion-label>
+      <ion-label>
+        <ion-icon name="star"></ion-icon>
+        Rating {{rating}}
+      </ion-label>
+    </div>
+  </div>
   <ion-list>
     <ion-list-header>
       Vehículo
@@ -39,18 +52,15 @@
       <p>Número: {{vehicle.number}}</p>
       <button ion-button (click)="locate()" item-end>
         {{LocateButtonText}}
-        </button>
+      </button>
     </ion-item>
     <ion-item *ngIf="locating == true">
-      <ion-label><b>Latitud:</b> {{ fbLatitude }}</ion-label>   
-      <ion-label><b>Latitud:</b> {{ fbLongitude }}</ion-label>      
+      <ion-label><b>Latitud:</b> {{ fbLatitude }}</ion-label>
+      <ion-label><b>Latitud:</b> {{ fbLongitude }}</ion-label>
     </ion-item>
   </ion-list>
-
   <div id="map_canvas">
   </div>
-
-  
   <ion-list>
     <ion-list-header>
       Cuenta
@@ -58,9 +68,8 @@
     <ion-item>
       <ion-icon name='power' item-start></ion-icon>
       <button ion-button (click)="logOut()" item-end>
-      Cerrar Sesión
+        Cerrar Sesión
       </button>
     </ion-item>
   </ion-list>
 </ion-content>
-

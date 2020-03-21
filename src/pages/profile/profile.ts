@@ -90,6 +90,7 @@ export class ProfilePage extends ProtectedPage {
 
   map: GoogleMap;
   myLocationMarker: Marker;
+  rating;
 
   constructor(
     public storage: Storage,
@@ -133,7 +134,7 @@ export class ProfilePage extends ProtectedPage {
     this.map = GoogleMaps.create('map_canvas', mapOptions);
 
   }
-  
+
 
   loadMap() {
     // If you want to run your app
@@ -223,6 +224,11 @@ export class ProfilePage extends ProtectedPage {
   getDriverInfo() {
     console.log("Getting Driver Information");
 
+    this.authService.getRating(this.user.user_id).then(data => {
+
+      this.rating =  Math.round(data);
+  });
+
     this.driver = this.httpClient.get("https://www.seven.hn/api/v1/drivers/" + this.user.user_id + '/', {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.idToken }
     });
@@ -266,7 +272,7 @@ export class ProfilePage extends ProtectedPage {
       this.myLocationMarker = null;
     }
 
-    
+
 
     if (this.locating == false) {
       console.log("Locating Vehicle with id: " + this.vehicle.id);

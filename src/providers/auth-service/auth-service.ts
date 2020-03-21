@@ -67,7 +67,7 @@ export class AuthService {
          this.saveData(data);
          this.idToken = rs.access;
          this.refreshToken = rs.refresh;
-         this.scheduleRefresh();         
+         this.scheduleRefresh();
       })
       .catch(e => {throw(e)});
   }
@@ -93,7 +93,7 @@ export class AuthService {
   logout() {
     // stop function of auto refesh
     this.unscheduleRefresh();
-    
+
     this.fcm.removeTokenFromFirestore();
     this.storage.remove('user_id');
     this.storage.remove('firstName');
@@ -114,15 +114,15 @@ export class AuthService {
      // Get a new JWT from Auth0 using the refresh token saved
      // in local storage
     this.storage.get("refresh").then((thetoken)=>{
-      console.log("Refresh token saved: " + thetoken);     
-      
+      console.log("Refresh token saved: " + thetoken);
+
       let  senddata: { refresh:string} = {
            refresh : thetoken
         };
 
         return this.http.post(this.cfg.apiUrl + this.cfg.user.refresh, senddata)
           .toPromise()
-          .then(data => {            
+          .then(data => {
             if(data.status == 200) {
               let rs = data.json();
               console.log("Old Token: " + thetoken);
@@ -134,7 +134,7 @@ export class AuthService {
             }
           })
           .catch(e => console.log('login error', e));
-          
+
 
           /*
         this.http.get(this.cfg.apiUrl + this.cfg.user.refresh+"?Token="+thetoken)
@@ -243,6 +243,14 @@ public unscheduleRefresh() {
 if (this.refreshSubscription) {
 this.refreshSubscription.unsubscribe();
 }
+}
+
+getRating(id) {
+
+  return this.http.get(this.cfg.apiUrl + this.cfg.user.driver + id + this.cfg.rate)
+  .map(res => res.json())
+  .map(resJson => resJson)
+  .toPromise();
 }
 
 }
