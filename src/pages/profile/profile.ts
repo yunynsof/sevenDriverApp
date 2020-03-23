@@ -226,7 +226,7 @@ export class ProfilePage extends ProtectedPage {
 
     this.authService.getRating(this.user.user_id).then(data => {
 
-      this.rating =  Math.round(data);
+      this.rating =  data.toFixed(2);
   });
 
     this.driver = this.httpClient.get("https://www.seven.hn/api/v1/drivers/" + this.user.user_id + '/', {

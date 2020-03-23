@@ -9,5 +9,5 @@ export let cfg = {
     driver: '/v1/drivers/'
   },
   books: '/books',
-  rate: '/rate/'
+  rate: '/rating'
 };
