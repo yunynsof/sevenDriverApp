@@ -10,7 +10,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Geolocation } from '@ionic-native/geolocation';
 import { AuthService } from '../providers/auth-service/auth-service';
 
-import { HttpClientModule } from '@angular/common/http'; 
+import { HttpClientModule } from '@angular/common/http';
 import {HttpModule, Http} from '@angular/http';
 import {AuthHttp, AuthConfig,JwtHelper} from 'angular2-jwt';
 
@@ -45,6 +45,7 @@ import { RidePageModule } from '../pages/ride/ride.module';
 import { Insomnia } from '@ionic-native/insomnia';
 
 import { CallNumber } from '@ionic-native/call-number';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 
 let storage = new Storage({});
@@ -74,7 +75,7 @@ const firebase = {
   imports: [
     BrowserModule,
     AngularFireDatabaseModule,
-    AngularFireModule.initializeApp(firebase), 
+    AngularFireModule.initializeApp(firebase),
     AngularFirestoreModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
@@ -94,8 +95,9 @@ const firebase = {
     StatusBar,
     JwtHelper,
     AlertService,
-    ToastService,    
+    ToastService,
     AppState,
+    InAppBrowser,
     SplashScreen,
     GoogleMaps,
     {
@@ -104,7 +106,7 @@ const firebase = {
       deps: [Http]
     },
     Geolocation,
-    Firebase,    
+    Firebase,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     FcmProvider,
     AuthService,

@@ -54,7 +54,7 @@ export class RidePage {
   public rideId;
 
   public status;
-  public statusId; 
+  public statusId;
   public passengerId;
 
   watch: any;
@@ -162,6 +162,9 @@ export class RidePage {
           const id = a.payload.doc.id;
           console.log("Doc Id: " + id);
           console.log("Status: " + data.status);
+          if(data.status == 2){
+            this.locate();
+          }
           this.statusId = data.status;
           this.passengerId = data.passengerId;
           this.translateStatus(data.status);
@@ -192,7 +195,7 @@ export class RidePage {
             console.log(doc.id);
             this.ride = this.rideServiceProvider.getRide(doc.id).valueChanges();
             this.rideId = doc.id;
-            //console.log(doc.status);           
+            //console.log(doc.status);
           })
         } else {
           alert("Usted no tiene ninguna carrera confirmada");
@@ -241,14 +244,14 @@ export class RidePage {
           const id = a.payload.doc.id;
           console.log("Doc Id of Devices: " + id);
           console.log("Passenger Token: " + data.token);
-          
+
           const httpOptions = {
             headers: new HttpHeaders({
               'Content-Type':  'application/json',
               'Authorization': 'key=AAAAh-MeXCI:APA91bF5Sluxx0bywxpgthmjruvmoL_2DziPB9Xr3a9qmBXyO1i-LO0WWr78fgNPLDIx6DBdTk5vkkCZXfiri08vKL-1rRWFSHCANd3BSr03cFjfZ7iv08007xSfgzZtsfU1LvEf3su8'
             })
           };
-      
+
           this.http.post('https://fcm.googleapis.com/fcm/send', {
             "notification":{
               "title":"Unidad Lista",
@@ -278,7 +281,7 @@ export class RidePage {
           docs.forEach(doc => {
             console.log(doc.data);
             console.log("Device data where passenger");
-            //console.log(doc.status);           
+            //console.log(doc.status);
           })
         } else {
           //alert("Usted no tiene ninguna carrera activa");
@@ -304,6 +307,7 @@ export class RidePage {
     if (rideId) {
       console.log("Ride to update: " + rideId);
       var ride = this.rideServiceProvider.getRide(rideId);
+      this.locate();
       ride.update({ status: 5 });
     } else {
       alert("No tiene ninguna solicitud para finalizar Carrera");
@@ -426,22 +430,22 @@ export class RidePage {
 
   call() {
     console.log('Calling');
-    
+
     this.http.get('https://seven.hn/api/v1/passengers/' + this.passengerId)
         .subscribe(res => {
           //console.log(JSON.stringify(res));
           console.log(res['phone']);
           // If the API returned a successful response, mark the user as logged in
           // this need to be fixed on Laravel project to retun the New Token ;
-          
+
           this.callNumber.callNumber(res['phone'], true)
             .then(res => console.log('Launched dialer!', res))
             .catch(err => console.log('Error launching dialer', err));
-            
+
         }, err => {
           console.error('ERROR', err);
         });
-        
+
   }
 
 }

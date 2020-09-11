@@ -16,6 +16,7 @@ import { Events } from 'ionic-angular';
 
 import { Geolocation } from '@ionic-native/geolocation';
 import { RidesPage } from '../rides/rides';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 
 @Component({
@@ -36,13 +37,18 @@ export class LoginPage {
     public storage: Storage,
     public formBuilder: FormBuilder,
     public authService: AuthService,
-    public events: Events, 
-    private geolocation: Geolocation) {
+    public events: Events,
+    private geolocation: Geolocation,
+    private iab: InAppBrowser,) {
 
     this.loginData = this.formBuilder.group({
       username: ['', Validators.compose([Validators.required])],
       password: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
     });
+  }
+
+  openBlank() {
+    this.iab.create(`https://seven.hn/admin/password_reset/`, `_blank`);
   }
 
   ionViewDidLoad() {
@@ -91,7 +97,7 @@ export class LoginPage {
 
   /**
    * Opens a paage
-   * 
+   *
    * @param page string Page name
    */
   openPage(page: string) {

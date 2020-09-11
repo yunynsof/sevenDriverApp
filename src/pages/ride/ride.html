@@ -37,9 +37,9 @@
       <b>Estado: </b> {{ status }}
     </h4>
     </ion-row>
-    <button ion-button (click)="locate()" item-end>
+    <!--<button ion-button (click)="locate()" item-end>
       {{LocateButtonText}}
-      </button>
+      </button>-->
   </ion-item>
 <ion-item *ngIf="(ride | async)?.driverName != ''">
   <ion-avatar item-left>
